@@ -1,54 +1,104 @@
-# React + TypeScript + Vite
+# Smart Municipal Complaint System - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend of the **Smart Municipal Complaint System**, built with **React, TypeScript, ShadCN, Tailwind CSS, Redux Toolkit, and Axios**.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
+- **React + TypeScript** - Frontend framework
+- **ShadCN + Tailwind CSS** - UI components & styling
+- **React Router** - Navigation
+- **Redux Toolkit + Async Thunk** - State management
+- **Axios (with Interceptors)** - API requests
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📂 Folder Structure
+```
+src/
+  ├── components/      # Reusable UI components
+  ├── pages/           # Different page views
+  ├── store/           # Redux store setup
+  ├── api/             # Axios API calls
+  ├── hooks/           # Custom hooks
+  ├── styles/          # Tailwind styles
+  ├── main.tsx         # App entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 🛠 Installation & Setup
+Clone the repository and install dependencies:
+```sh
+git clone https://github.com/your-repo/smart-municipal-frontend.git
+cd smart-municipal-frontend
+npm install
 ```
+
+Start the development server:
+```sh
+npm run dev
+```
+
+## 🔗 API Handling (Axios with Interceptors)
+Create `src/api/api.ts` with the following setup:
+```ts
+import axios from 'axios';
+
+const API = axios.create({ baseURL: 'https://api.example.com' });
+
+API.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+export default API;
+```
+
+## 🔄 State Management (Redux Toolkit)
+Install Redux Toolkit:
+```sh
+npm install @reduxjs/toolkit react-redux
+```
+
+Example Async Thunk for fetching complaints:
+```ts
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import API from '../../api/api';
+
+export const fetchComplaints = createAsyncThunk(
+  'complaints/fetch',
+  async () => {
+    const response = await API.get('/complaints');
+    return response.data;
+  }
+);
+
+const complaintsSlice = createSlice({
+  name: 'complaints',
+  initialState: { data: [], loading: false },
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchComplaints.pending, state => { state.loading = true; })
+      .addCase(fetchComplaints.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      });
+  }
+});
+
+export default complaintsSlice.reducer;
+```
+
+## 🎨 UI Components with ShadCN
+Install ShadCN and configure it:
+```sh
+npm install -g shadcn-ui
+npx shadcn-ui init
+```
+
+## 🎉 Features
+✅ User authentication (Login, Register)  
+✅ Submit complaints with images & location  
+✅ Track complaint status  
+✅ Admin panel to manage complaints  
+✅ Rewards system for resolved complaints  
+
+---
+Made with ❤️ by **Your Team**
