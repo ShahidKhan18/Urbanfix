@@ -1,4 +1,4 @@
-# Smart Municipal Complaint System - Frontend
+# UrbanFix (Smart Municipal Complaint System) - Frontend
 
 This is the frontend of the **Smart Municipal Complaint System**, built with **React, TypeScript, ShadCN, Tailwind CSS, Redux Toolkit, and Axios**.
 
@@ -24,8 +24,8 @@ src/
 ## 🛠 Installation & Setup
 Clone the repository and install dependencies:
 ```sh
-git clone https://github.com/your-repo/smart-municipal-frontend.git
-cd smart-municipal-frontend
+git clone https://github.com/ShahidKhan18/Urbanfix.git
+cd frontend
 npm install
 ```
 
@@ -101,4 +101,4 @@ npx shadcn-ui init
 ✅ Rewards system for resolved complaints  
 
 ---
-Made with ❤️ by **Your Team**
+Made with ❤️ by **Shahid Khan Ishan Jain Pranay Sharma** 
