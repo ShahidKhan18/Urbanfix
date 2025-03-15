@@ -1,7 +1,8 @@
 const express = require("express");
 
 const { ServerConfig } = require("./config");
-const apiRoutes =require("./routes")
+const apiRoutes =require("./routes");
+const { ErrorMiddleware } = require("./middlewares");
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use(express.urlencoded({extended:true}))
 app.use("/api",apiRoutes)
 
 
-
+app.use(ErrorMiddleware);
 app.listen(ServerConfig.PORT, (_req, _res) =>
   console.log(`Server Start Successfully on PORT ${ServerConfig.PORT}`)
 );
