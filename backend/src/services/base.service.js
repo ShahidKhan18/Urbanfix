@@ -1,3 +1,5 @@
+const {AppError} =require("../utils")
+
 class BaseService {
   constructor(model, validationSchema) {
     this.model = model;

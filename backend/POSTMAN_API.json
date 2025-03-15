@@ -1,0 +1,142 @@
+{
+    "info": {
+        "name": "UrbanFix API Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "User APIs",
+            "item": [
+                {
+                    "name": "Register User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "http://localhost:3000/api/v1/v1/users/register",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\": \"John Doe\", \"email\": \"john@example.com\", \"password\": \"password123\"}"
+                        }
+                    }
+                },
+                {
+                    "name": "Login User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "http://localhost:3000/api/v1/v1/users/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\": \"john@example.com\", \"password\": \"password123\"}"
+                        }
+                    }
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "http://localhost:3000/api/v1/v1/users/refresh-token",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"refreshToken\": \"your_refresh_token\"}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get User Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": "http://localhost:3000/api/v1/v1/users/profile"
+                    }
+                }
+            ]
+        }
+    ]
+}{
+    "info": {
+        "name": "UrbanFix API Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "User APIs",
+            "item": [
+                {
+                    "name": "Login User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": "http://localhost:3000/api/v1/users/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "200 OK",
+                            "body": "{ \"accessToken\": \"your_access_token\" }"
+                        },
+                        {
+                            "name": "Too Many Requests (Rate Limit)",
+                            "status": "429 Too Many Requests",
+                            "body": "{ \"message\": \"Too many login attempts. Please try again later.\" }"
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "401 Unauthorized",
+                            "body": "{ \"message\": \"Invalid email or password\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Check Secure Refresh Token",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Cookie", "value": "refreshToken=your_refresh_token" }
+                        ],
+                        "url": "http://localhost:3000/api/v1/users/refresh-token"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "200 OK",
+                            "body": "{ \"accessToken\": \"new_access_token\" }"
+                        },
+                        {
+                            "name": "Forbidden",
+                            "status": "403 Forbidden",
+                            "body": "{ \"message\": \"Invalid refresh token\" }"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -3,9 +3,10 @@ const express = require("express");
 const { ServerConfig } = require("./config");
 const apiRoutes =require("./routes");
 const { ErrorMiddleware } = require("./middlewares");
-
+const { DBConnection } = require("./config");
 const app = express();
 
+DBConnection();
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 

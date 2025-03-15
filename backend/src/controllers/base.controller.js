@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
-const catchAsyncError = require("../middlewares/catchAsyncError");
-const SuccessResponse = require("../utils/response");
+const catchAsyncError = require("../middlewares/catchAsyncError.middleware");
+const {SuccessResponse} = require("../utils/common");
 
 class BaseController {
   constructor(service) {
@@ -15,7 +15,7 @@ class BaseController {
   });
 
   findById = catchAsyncError(async (req, res) => {
-    const response = await this.service.findById(req.params.id);
+    const response = await this.service.findById(req.user.id || req.params.id);
     SuccessResponse.data = response;
     SuccessResponse.message = `Successfully fetched ${this.service.model.modelName}`;
     res.status(StatusCodes.OK).json(SuccessResponse);

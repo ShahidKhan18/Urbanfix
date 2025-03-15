@@ -1,3 +1,4 @@
-module.exports={
-    AppError:require("./errors/app-errors")
-}
+module.exports = {
+  AppError: require("./errors/app.error"),
+  JWTUtils: require("./jwt.utils"),
+};
