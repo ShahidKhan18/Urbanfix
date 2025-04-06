@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true, select: false }, // Prevent password exposure
     role: { type: String, enum: ["citizen", "admin"], default: "citizen" },
     refreshToken: { type: String, select: false },
+    complaints: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Complaint",
+      },
+    ],
   },
   { timestamps: true }
 );
