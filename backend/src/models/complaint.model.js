@@ -52,5 +52,5 @@ const complaintSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+complaintSchema.index({ location: "2dsphere" });
 module.exports= mongoose.model("Complaint", complaintSchema);

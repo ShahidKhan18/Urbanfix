@@ -1,8 +1,8 @@
 const BaseService = require("./base.service");
-const Upvote = require("../models/upvote.model");
+const Upvote = require("../models/upvote.modals");
 const Complaint = require("../models/complaint.model");
 const User = require("../models/user.model");
-const AppError = require("../utils/AppError");
+const {AppError} = require("../utils");
 
 class UpvoteService extends BaseService {
   constructor() {
@@ -10,10 +10,10 @@ class UpvoteService extends BaseService {
   }
 
   async upvoteComplaint(userId, complaintId) {
-    let upvote = await Upvote.findOne({ complaint: complaintId });
+    let upvote = await this.model.findOne({ complaint: complaintId });
 
     if (!upvote) {
-      upvote = await Upvote.create({
+      upvote = await this.model.create({
         user: userId,
         complaint: complaintId,
         users: [userId],
@@ -37,12 +37,12 @@ class UpvoteService extends BaseService {
           await Complaint.findByIdAndUpdate(complaintId, {
             $pull: { upvotes: upvote._id },
           });
-          await Upvote.findByIdAndDelete(upvote._id);
+          await this.model.findByIdAndDelete(upvote._id);
         }
 
         // Also remove from user (optional: if stored)
         await User.findByIdAndUpdate(userId, {
-          $pull: { upvotes: upvote._id },
+          $pull: { upVotedComplaints: upvote._id },
         });
 
         return { removed: true, message: "Upvote removed" };
@@ -59,7 +59,7 @@ class UpvoteService extends BaseService {
     });
 
     await User.findByIdAndUpdate(userId, {
-      $addToSet: { upvotes: upvote._id },
+      $addToSet: { upVotedComplaints: upvote._id },
     });
 
     return upvote;

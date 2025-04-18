@@ -1,7 +1,7 @@
 const BaseService = require("./base.service");
-const { Complaint, User } = require("../models");
+const { Complaint, User, Upvotes } = require("../models");
 
-const { AppError, getDataUri } = require("../utils");
+const { AppError, getDataUri,LocationUtils } = require("../utils");
 const { ComplaintValidation } = require("../validations");
 const { StatusCodes } = require("http-status-codes");
 const cloudinary = require("cloudinary");
@@ -14,7 +14,7 @@ class ComplainetService extends BaseService {
   // ✅ Create a complaint
   async createComplaint(data, req) {
     // Validate and coerce wardNumber to a number
-    this.validateData({ ...data, wardNumber: +data.wardNumber });
+    // this.validateData({ ...data, wardNumber: +data.wardNumber });
 
     const file = req.file;
     if (!file) {
@@ -28,22 +28,40 @@ class ComplainetService extends BaseService {
       throw new AppError("User not found", StatusCodes.NOT_FOUND);
     }
 
-    const { title, description, latitude, longitude } = data;
+    let { title, description, latitude, longitude } = data;
 
     if (!latitude || !longitude) {
-      throw new AppError(
-        "Latitude and Longitude are required",
-        StatusCodes.BAD_REQUEST
+      console.log(
+        "🔍 No coordinates provided. Fetching from Google Geolocation API..."
       );
+      const location = await LocationUtils.getGoogleGeolocation();
+      if (location) {
+        latitude = location.lat;
+        longitude = location.lng;
+      } else {
+        throw new AppError(
+          "❌ Unable to fetch live location. Please provide latitude and longitude.",
+          StatusCodes.BAD_REQUEST
+        );
+      }
+      
     }
 
     const fileUri = getDataUri(file);
     const myCloud = await cloudinary.v2.uploader.upload(fileUri.content);
 
+    const wardNumber = await LocationUtils.getWardByCoordinates(
+      latitude,
+      longitude
+    );
+    
+
+    // console.log("Ward Number:", wardNumber);
+
     const complaintData = {
       title,
       description,
-      wardNumber,
+      wardNumber: wardNumber.ward_no,
       location: {
         type: "Point",
         coordinates: [parseFloat(longitude), parseFloat(latitude)], // longitude first
@@ -58,7 +76,7 @@ class ComplainetService extends BaseService {
     };
 
     const complaint = await this.model.create(complaintData);
-
+    await Upvotes.create({complaint: complaint._id, user: _id})
     user.complaints.push(complaint._id);
     await user.save();
 
@@ -68,7 +86,7 @@ class ComplainetService extends BaseService {
   // ✅ Get complaints within 400m of given location
   async getNearbyComplaints(latitude, longitude, radiusInMeters = 400) {
     if (!latitude || !longitude) {
-      throw new AppError("Latitude and Longitude are required", 400);
+      throw new AppError("Latitude and Longitude are required", StatusCodes.BAD_REQUEST);
     }
 
     const complaints = await this.model
@@ -100,7 +118,9 @@ class ComplainetService extends BaseService {
       })
       .populate("user", "name email");
 
-    return complaints;
+   const wardDetails= await LocationUtils.getWardByWardNumber(wardNumber);
+    
+    return {complaints, wardDetails};
   }
 }
 

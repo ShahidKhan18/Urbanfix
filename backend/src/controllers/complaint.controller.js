@@ -16,6 +16,28 @@ class ComplaintController extends BaseController {
     SuccessResponse.message = "Complaint created successfully";
     res.status(StatusCodes.CREATED).json(SuccessResponse);
   });
+  getNearbyComplaints = catchAsyncError(async (req, res) => {
+    // console.log("Creating complaint ", req.body);
+    let { longitude, latitude } = req.query;
+    const response = await ComplaintService.getNearbyComplaints(
+      latitude,
+      longitude
+    );
+    SuccessResponse.data = response;
+    SuccessResponse.message = "Nearby complaints fetched successfully";
+    res.status(StatusCodes.OK).json(SuccessResponse);
+  });
+
+  getComplaintsByWardNumber = catchAsyncError(async (req, res) => {
+    // console.log("Creating complaint ", req.body);
+    let { wardNumber } = req.query;
+    const response = await ComplaintService.getComplaintsByWardNumber(
+      wardNumber
+    );
+    SuccessResponse.data = response;
+    SuccessResponse.message = "Complaints fetched successfully by ward number";
+    res.status(StatusCodes.OK).json(SuccessResponse);
+  });
 }
 
 module.exports = new ComplaintController();

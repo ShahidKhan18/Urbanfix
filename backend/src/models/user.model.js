@@ -14,6 +14,12 @@ const userSchema = new mongoose.Schema(
         ref: "Complaint",
       },
     ],
+    upVotedComplaints: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Upvote",
+      },
+    ],
   },
   { timestamps: true }
 );
