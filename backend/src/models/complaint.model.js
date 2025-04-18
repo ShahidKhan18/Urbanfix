@@ -13,7 +13,7 @@ const complaintSchema = new mongoose.Schema(
     },
 
     wardNumber: {
-      type: Number, 
+      type: Number,
       required: true,
     },
 
@@ -21,11 +21,28 @@ const complaintSchema = new mongoose.Schema(
       {
         url: { type: String, required: true }, // secure_url from Cloudinary
         public_id: { type: String, required: true }, // used for deleting/updating
-        
       },
     ],
 
-    upvotes: { type: Number, default: 0 },
+    upvotes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Upvote",
+      },
+    ],
+
+    // ⬇️ Location (lat, lng) stored in GeoJSON format
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+      },
+    },
 
     user: {
       type: mongoose.Schema.Types.ObjectId,
