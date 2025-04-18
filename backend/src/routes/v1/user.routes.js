@@ -8,5 +8,6 @@ router.post("/register", UserController.create); // Inherited from BaseControlle
 router.post("/login",RateLimitter.loginLimiter, UserController.login);
 router.post("/refresh-token", UserController.refreshAccessToken);
 router.get("/profile", AuthMiddleware.authenticateUser, UserController.findById); // Fetch user profile
-
+router.get("/complaints", AuthMiddleware.authenticateUser, UserController.getUserComplainets); // Fetch user complaints
+router.get("/logout", AuthMiddleware.authenticateUser, UserController.logout); // Logout user
 module.exports = router;

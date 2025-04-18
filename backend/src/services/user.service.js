@@ -1,5 +1,5 @@
 const BaseService = require("./base.service");
-const { User } = require("../models");
+const { User, Complaint } = require("../models");
 const {
   JWTUtils: { generateAccessToken, generateRefreshToken },
 } = require("../utils");
@@ -47,6 +47,48 @@ class UserService extends BaseService {
     const user = await User.findOne({ refreshToken });
     if (!user) throw new AppError("Invalid refresh token", 403);
     return { accessToken: generateAccessToken(user) };
+  }
+
+  async logout(userId) {
+    const user = await User.findById(userId).select("+refreshToken");
+    if (!user) throw new AppError("User not found", 404);
+
+    // Clear refresh token
+    user.refreshToken = null;
+    await user.save();
+  }
+
+  async getUserComplaints(userId) {
+    const user = await User.findById(userId)
+      .populate("complaints", "title description createdAt status user")
+      .populate({
+        path: "upVotedComplaints",
+        select: "complaint user count createdAt",
+        populate: {
+          path: "complaint",
+          select: "title description createdAt status user",
+          populate: {
+            path: "user",
+            select: "name email", // Populate the user who created the complaint
+          },
+        },
+      })
+      .select("name email role complaints upVotedComplaints") // Selecting user info
+      .lean(); // If you want a plain JavaScript object, not Mongoose document
+
+    if (!user) throw new AppError("User not found", 404); // Move this here to check user existence first
+
+    // To handle the result and get both types:
+    const allComplaints = {
+      normalComplaints: user.complaints, // Normal complaints filed by the user
+      upvotedComplaints: user.upVotedComplaints.map((upvote) => ({
+        complaint: upvote.complaint,
+        count: upvote.count,
+        createdAt: upvote.createdAt,
+      })),
+    };
+
+    return allComplaints;
   }
 }
 
