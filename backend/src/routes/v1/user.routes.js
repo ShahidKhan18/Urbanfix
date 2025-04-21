@@ -10,4 +10,12 @@ router.post("/refresh-token", UserController.refreshAccessToken);
 router.get("/profile", AuthMiddleware.authenticateUser, UserController.findById); // Fetch user profile
 router.get("/complaints", AuthMiddleware.authenticateUser, UserController.getUserComplainets); // Fetch user complaints
 router.get("/logout", AuthMiddleware.authenticateUser, UserController.logout); // Logout user
+
+// Admin routes
+
+router.get(
+  "/wardDetails",
+  AuthMiddleware.authenticateAdmin,
+  UserController.getWardsDeatails
+); 
 module.exports = router;

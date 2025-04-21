@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
   "http://localhost:8080",
-  "http://192.168.29.183:8080",
+  "192.168.29.183:8080",
   "http://localhost:3000", // Add this if you have any direct API testing
 ];
 

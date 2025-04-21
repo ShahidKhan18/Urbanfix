@@ -31,11 +31,23 @@ class UserController extends BaseController {
     res.status(StatusCodes.OK).json(SuccessResponse);
   });
 
-  logout= catchAsyncError(async (req, res) => {
+  logout = catchAsyncError(async (req, res) => {
     const userId = req.user._id;
     await this.service.logout(userId);
     res.clearCookie("refreshToken", { path: "/" });
     SuccessResponse.message = "Logout successful";
+    res.status(StatusCodes.OK).json(SuccessResponse);
+  });
+
+  getWardsDeatails = catchAsyncError(async (req, res) => {
+    const response = await this.service.getWardsDeatails(req.query.wardNumber);
+    if (!response) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "Ward not found",
+      });
+    }
+    SuccessResponse.data = response;
+    SuccessResponse.message = "Ward details fetched successfully";
     res.status(StatusCodes.OK).json(SuccessResponse);
   });
 }

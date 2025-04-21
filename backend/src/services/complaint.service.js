@@ -54,9 +54,12 @@ class ComplainetService extends BaseService {
       latitude,
       longitude
     );
-    
+    // let  wardNumber=1
+    if(!wardNumber) {
+      throw new AppError("Ward number not found for the given coordinates", StatusCodes.BAD_REQUEST);
+    }
+    console.log("Ward Number:", wardNumber);
 
-    // console.log("Ward Number:", wardNumber);
 
     const complaintData = {
       title,

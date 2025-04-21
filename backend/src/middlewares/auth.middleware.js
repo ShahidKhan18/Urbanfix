@@ -19,4 +19,24 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateUser };
+const authenticateAdmin = async (req, res, next) => {
+   const  adminToken = req.headers.authorization?.split(" ")[1];
+    if (!adminToken) return next(new AppError("Unauthorized", 401));
+
+    try {
+      const decoded = jwt.verify(adminToken, process.env.JWT_SECRET);
+      console.log(decoded,"Decoded");
+      req.isAdmin = decoded.role === "admin" ? true : false;
+      if (req.isAdmin === null || req.isAdmin === undefined)
+        return next(new AppError("User not found", 401));
+      if (!req.isAdmin )
+        return next(new AppError("Unauthorized , Only for admins", 403));
+      next();
+    } catch (error) {
+      console.log(error,"Error")
+      next(new AppError("Invalid or expired token", 403));
+    }
+
+};
+
+module.exports = { authenticateUser, authenticateAdmin };
