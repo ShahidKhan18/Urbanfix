@@ -23,6 +23,8 @@ class UserService extends BaseService {
       user.password
     );
     if (!isPasswordMatch) throw new AppError("Invalid email or password", 401);
+     
+
 
     // Generate new access and refresh tokens
     const accessToken = generateAccessToken(user);
@@ -33,14 +35,15 @@ class UserService extends BaseService {
     await user.save();
 
     // Send refresh token in HTTP-only secure cookie
-    res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: "Strict", // Prevent CSRF attacks
-      maxAge: 365 * 24 * 60 * 60 * 1000, // 1 Year
-    });
-
-    return { accessToken };
+    // res.cookie("refreshToken", newRefreshToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production", // Secure in production
+    //   sameSite: "Lax", 
+    //   maxAge: 365 * 24 * 60 * 60 * 1000, // 1 Year
+    // });
+    
+   
+    return { accessToken ,admin:true,userName:user.name,email:user.email,role:user.role,id:user._id}; // Return user info and access token} 
   }
 
   async refreshAccessToken(refreshToken) {
