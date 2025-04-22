@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://192.168.1.65:8080", // Excitel Hyyzo IP
   "http://localhost:3000", // Add this if you have any direct API testing
   "10.11.17.223:8080", //Poornima IP
-  "https://urbanfix-mmai.onrender.com", //Production URL
+  "https://urbanfix-city-pulse.onrender.com/", //Production URL
 ];
 
 app.use(
@@ -27,7 +27,7 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps, Postman, or curl requests)
       if (!origin) return callback(null, true);
-
+      console.log("API calling Origin : ",origin)
       // Check if the origin is in the allowed list or contains localhost
       if (
         allowedOrigins.includes(origin) ||
