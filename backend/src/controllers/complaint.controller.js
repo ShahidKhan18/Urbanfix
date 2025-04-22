@@ -38,6 +38,18 @@ class ComplaintController extends BaseController {
     SuccessResponse.message = "Complaints fetched successfully by ward number";
     res.status(StatusCodes.OK).json(SuccessResponse);
   });
+
+  updateComplaintStatus = catchAsyncError(async (req, res) => {
+    const { complaintId } = req.params;
+    const { status } = req.body;
+    const response = await ComplaintService.updateComplaintStatus(
+      complaintId,
+      status
+    );
+    SuccessResponse.data = response;
+    SuccessResponse.message = "Complaint status updated successfully";
+    res.status(StatusCodes.OK).json(SuccessResponse);
+  })
 }
 
 module.exports = new ComplaintController();

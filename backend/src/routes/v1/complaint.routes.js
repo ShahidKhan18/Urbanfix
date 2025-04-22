@@ -13,4 +13,10 @@ router.get(
   UpvoteController.upvote
 );
 
+router.put(
+  "/updateComplaintStatus",
+  AuthMiddleware.authenticateAdmin,
+  ComplaintController.updateComplaintStatus
+);
+
 module.exports=router;

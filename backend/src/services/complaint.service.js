@@ -29,8 +29,8 @@ class ComplainetService extends BaseService {
     }
 
     let { title, description, latitude, longitude } = data;
-    
-    console.log("Received Latitude || Longitude : ",latitude, longitude);
+
+    console.log("Received Latitude || Longitude : ", latitude, longitude);
 
     if (!latitude || !longitude) {
       console.log(
@@ -46,7 +46,6 @@ class ComplainetService extends BaseService {
           StatusCodes.BAD_REQUEST
         );
       }
-      
     }
 
     const fileUri = getDataUri(file);
@@ -57,11 +56,13 @@ class ComplainetService extends BaseService {
       longitude
     );
     // let  wardNumber=32
-    if(!wardNumber) {
-      throw new AppError("Ward number not found for the given coordinates", StatusCodes.BAD_REQUEST);
+    if (!wardNumber) {
+      throw new AppError(
+        "Ward number not found for the given coordinates",
+        StatusCodes.BAD_REQUEST
+      );
     }
     console.log("Ward Number:", wardNumber);
-
 
     const complaintData = {
       title,
@@ -82,7 +83,7 @@ class ComplainetService extends BaseService {
     };
 
     const complaint = await this.model.create(complaintData);
-    await Upvotes.create({complaint: complaint._id, user: _id})
+    await Upvotes.create({ complaint: complaint._id, user: _id });
     user.complaints.push(complaint._id);
     await user.save();
 
@@ -92,7 +93,10 @@ class ComplainetService extends BaseService {
   // ✅ Get complaints within 400m of given location
   async getNearbyComplaints(latitude, longitude, radiusInMeters = 400) {
     if (!latitude || !longitude) {
-      throw new AppError("Latitude and Longitude are required", StatusCodes.BAD_REQUEST);
+      throw new AppError(
+        "Latitude and Longitude are required",
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     const complaints = await this.model
@@ -124,9 +128,28 @@ class ComplainetService extends BaseService {
       })
       .populate("user", "name email");
 
-   const wardDetails= await LocationUtils.getWardByWardNumber(wardNumber);
-    
-    return {complaints, wardDetails};
+    const wardDetails = await LocationUtils.getWardByWardNumber(wardNumber);
+
+    return { complaints, wardDetails };
+  }
+
+  async updateComplaintStatus(complaintId, status) {
+     
+    if(!complaintId || !status) {
+      throw new AppError("Complaint ID and status are required", 400);
+    }
+    if(status !== "open" && status !== "in_progress" && status !== "resolved") {
+      throw new AppError("Invalid  Complaint status", 400);
+    }
+    const complaint = await this.model.findById(complaintId);
+    if (!complaint) {
+      throw new AppError("Complaint not found", 404);
+    }
+     
+    complaint.status = status;
+    await complaint.save();
+    return complaint;
+
   }
 }
 

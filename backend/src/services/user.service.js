@@ -136,6 +136,8 @@ class UserService extends BaseService {
     if(!wards) throw new AppError("Ward not found", 404);
     return wards;
   }
+
+  
 }
 
 module.exports = new UserService();
