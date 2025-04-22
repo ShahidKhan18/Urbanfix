@@ -15,8 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://localhost:8080",
   "192.168.29.183:8080",
+  "192.168.1.65:8080",
+  "http://192.168.1.65:8080", // Excitel Hyyzo IP 
   "http://localhost:3000", // Add this if you have any direct API testing
-  "10.11.17.223:8080",//Poornima IP
+  "10.11.17.223:8080", //Poornima IP
 ];
 
 app.use(
