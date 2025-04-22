@@ -50,11 +50,11 @@ class ComplainetService extends BaseService {
     const fileUri = getDataUri(file);
     const myCloud = await cloudinary.v2.uploader.upload(fileUri.content);
 
-    const wardNumber = await LocationUtils.getWardByCoordinates(
-      latitude,
-      longitude
-    );
-    // let  wardNumber=1
+    // const wardNumber = await LocationUtils.getWardByCoordinates(
+    //   latitude,
+    //   longitude
+    // );
+    let  wardNumber=32
     if(!wardNumber) {
       throw new AppError("Ward number not found for the given coordinates", StatusCodes.BAD_REQUEST);
     }
@@ -64,7 +64,8 @@ class ComplainetService extends BaseService {
     const complaintData = {
       title,
       description,
-      wardNumber: wardNumber.ward_no,
+      // wardNumber: wardNumber.ward_no,
+      wardNumber: 32,
       location: {
         type: "Point",
         coordinates: [parseFloat(longitude), parseFloat(latitude)], // longitude first
