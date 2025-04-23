@@ -40,8 +40,8 @@ class ComplaintController extends BaseController {
   });
 
   updateComplaintStatus = catchAsyncError(async (req, res) => {
-    const { complaintId } = req.params;
-    const { status } = req.body;
+    
+    const { status, complaintId } = req.body;
     const response = await ComplaintService.updateComplaintStatus(
       complaintId,
       status
