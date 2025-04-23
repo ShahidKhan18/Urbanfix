@@ -27,7 +27,7 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps, Postman, or curl requests)
       if (!origin) return callback(null, true);
-      console.log("API calling Origin : ",origin)
+      console.log("API calling Origin : ", origin);
       // Check if the origin is in the allowed list or contains localhost
       if (
         allowedOrigins.includes(origin) ||
