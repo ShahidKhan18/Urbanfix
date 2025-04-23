@@ -51,19 +51,22 @@ class UserService extends BaseService {
       }; // Return user info and access token}
     } else if (userData.role === "admin") {
       console.log("Admin login attempt with email:", userData);
-      const user =await WardOfficer.findOne({email:userData.email})
-      console.log(user)
-      if(!user) throw new AppError("Invalid Email ID", 401);
-      
-       const accessToken = generateAccessToken({...user,role:"admin"});
-       return {
-         accessToken,
-         wardNumber: user.wardNumber,
-         name: user.name,
-         email: user.email,
-         role:"admin",
-         id: user._id,
-       };
+      const user = await WardOfficer.findOne({ email: userData.email });
+      console.log(user);
+      if (!user) throw new AppError("Invalid Email ID", 401);
+
+      if (user.password !== userData.password)
+        throw new AppError("Invalid user password", 401);
+
+      const accessToken = generateAccessToken({ ...user, role: "admin" });
+      return {
+        accessToken,
+        wardNumber: user.wardNumber,
+        name: user.name,
+        email: user.email,
+        role: "admin",
+        id: user._id,
+      };
     }
   }
 
@@ -74,14 +77,13 @@ class UserService extends BaseService {
   }
 
   async logout(userId) {
-    
     // const user = await User.findById(userId).select("+refreshToken");
     // if (!user) throw new AppError("User not found", 404);
 
     // // Clear refresh token
     // user.refreshToken = null;
     // await user.save();
-    return true
+    return true;
   }
 
   async getUserComplaints(userId) {
@@ -131,13 +133,11 @@ class UserService extends BaseService {
     return allComplaints;
   }
 
-  async getWardsDeatails(wardNumber){
+  async getWardsDeatails(wardNumber) {
     const wards = await Ward.find({ ward_no: wardNumber });
-    if(!wards) throw new AppError("Ward not found", 404);
+    if (!wards) throw new AppError("Ward not found", 404);
     return wards;
   }
-
-  
 }
 
 module.exports = new UserService();

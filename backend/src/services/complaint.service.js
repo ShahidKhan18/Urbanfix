@@ -138,7 +138,7 @@ class ComplainetService extends BaseService {
     if(!complaintId || !status) {
       throw new AppError("Complaint ID and status are required", 400);
     }
-    if(status !== "open" && status !== "in_progress" && status !== "resolved") {
+    if(status !== "open" && status !== "in_progress" && status !== "resolved" && status !== "rejected") {
       throw new AppError("Invalid  Complaint status", 400);
     }
     const complaint = await this.model.findById(complaintId);
